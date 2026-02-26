@@ -45,7 +45,7 @@ exports.requireAdmin = (req, res, next) => {
   next();
 };
 
-// Optional authentication
+// Optional authentication — attaches user to req if token is present, silently skips if not
 exports.optionalAuth = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -56,21 +56,10 @@ exports.optionalAuth = (req, res, next) => {
       req.user = decoded;
     }
   } catch (error) {
-    // Ignore errors for optional auth
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  optionalAuth token error (ignored):', error.message);
+    }
   }
 
-  next();
-};
-
-// CORS headers
-exports.corsHeaders = (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
   next();
 };

@@ -35,3 +35,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+api.getAdminStats = () => api.get('/admin/stats');

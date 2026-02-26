@@ -1,42 +1,284 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --cream: #F8F4F0;
+  --warm-white: #FEF9F5;
+  --sand: #E9E0D4;
+  --taupe: #C5A983;
+  --warm-brown: #9C7C5B;
+  --deep-brown: #5D3E2F;
+  --charcoal: #3B3329;
+  --gold: #C0A17B;
+  --nude: #DAC5B0;
+  --text-muted: #8D7C6C;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--warm-white);
+  color: var(--charcoal);
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 0 30px; /* Increased padding for better spacing */
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  display: flex;
+  align-items: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.logo-circle {
+  width: 50px; /* Slightly larger */
+  height: 50px;
+  background-color: var(--gold);
+  border: 3px solid var(--gold); /* Thicker border */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.logo-circle svg {
+  width: 30px;
+  height: 30px;
+  fill: var(--deep-brown);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-text .brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: var(--gold);
+}
+
+.logo-text .subtitle {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--nude);
+}
+
+.search-bar {
+  margin: 0 auto; /* Center the search bar */
+  max-width: 400px; /* Adjusted width to prevent collision */
+  background: rgba(255, 255, 255, 0.1); /* Slightly more transparent */
+  border: 1px solid rgba(192, 161, 123, 0.5); /* Adjusted gold tint */
+  border-radius: 6px; /* Slightly more rounded */
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+}
+
+.search-bar input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  flex: 1;
+}
+
+.search-bar input::placeholder {
+  color: var(--nude);
+}
+
+.search-bar svg {
+  fill: var(--gold);
+  width: 16px;
+  height: 16px;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Reduced gap to save space */
+}
+
+.nav-icons .icon {
+  display: flex;
+  align-items: center;
+  color: var(--nude);
+  font-family: 'Jost', sans-serif;
+  font-size: 10px; /* Slightly larger text */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.nav-icons .icon:hover {
+  color: var(--gold);
+}
+
+.nav-icons .icon svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--nude);
+  transition: fill 0.3s ease;
+}
+
+.nav-icons .icon:hover svg {
+  fill: var(--gold);
+}
+
+.nav-icons .badge {
+  background-color: var(--gold);
+  color: var(--deep-brown);
+  border-radius: 50%;
+  font-size: 9px;
+  padding: 2px 6px;
+  margin-left: 5px;
+}
+
+.category-bar {
+  background-color: var(--cream); /* Changed background color */
+  border-bottom: 1px solid var(--sand);
+  height: 50px; /* Slightly taller */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.category-bar a {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px; /* Slightly larger text */
+  letter-spacing: 1.8px; /* Adjusted spacing */
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  text-decoration: none;
+}
+
+.category-bar a:hover {
+  color: var(--warm-brown);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--gold);
+}
+
+.category-bar a:hover + .sub-categories {
+  display: block;
+}
+
+/* Ensure the parent category has relative positioning */
+.category {
+  position: relative;
+}
+
+/* Adjust the dropdown positioning for better alignment */
+.sub-categories {
+  display: none;
+  position: absolute;
+  top: 100%; /* Align directly below the parent category */
+  left: 0;
+  background-color: var(--warm-white);
+  border: 1px solid var(--sand);
+  box-shadow: 0 4px 8px rgba(155, 123, 90, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 10;
+}
+
+.sub-categories a {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  color: var(--charcoal);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.sub-categories a:hover {
+  background-color: var(--sand);
+  color: var(--warm-brown);
+}
+
+.hero {
+  height: 550px; /* Slightly taller */
+  background: linear-gradient(135deg, #F0E4D4 0%, #E0C5B0 40%, #D0B095 100%); /* Adjusted gradient */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+}
+
+.hero-content {
+  max-width: 50%;
+}
+
+.hero-content .label {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--warm-brown);
+  text-transform: uppercase;
+}
+
+.hero-content .brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px; /* Slightly smaller */
+  font-style: italic;
+  color: var(--deep-brown);
+}
+
+.hero-content .subtitle {
+  font-family: 'Jost', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text-muted);
+}
+
+.hero-content .cta {
+  background-color: var(--deep-brown);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 16px 40px; /* Slightly larger button */
+  border-radius: 4px; /* Slightly more rounded */
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.hero-content .cta:hover {
+  background-color: var(--gold);
+  color: var(--deep-brown);
+}
+
+.hero-image img {
+  max-height: 420px; /* Slightly larger image */
+  filter: drop-shadow(0 20px 40px rgba(92, 61, 46, 0.25));
+}
+
+@media (max-width: 768px) {
+  header {
+    grid-template-columns: 1fr auto;
+    flex-wrap: wrap;
   }
-  to {
-    transform: rotate(360deg);
+
+  .search-bar {
+    margin: 10px 0;
+    width: 100%;
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .nav-icons {
+    justify-content: flex-end;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

@@ -4,9 +4,16 @@ const jwt = require('jsonwebtoken');
 
 class JwtService {
   constructor() {
-    this.secret = process.env.JWT_SECRET || 'your-secret-key';
+    if (!process.env.JWT_SECRET) {
+      throw new Error('❌ JWT_SECRET is not defined in environment variables');
+    }
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error('❌ JWT_REFRESH_SECRET is not defined in environment variables');
+    }
+
+    this.secret = process.env.JWT_SECRET;
+    this.refreshSecret = process.env.JWT_REFRESH_SECRET;
     this.expiresIn = process.env.JWT_EXPIRE || '24h';
-    this.refreshSecret = process.env.JWT_SECRET + '_refresh';
     this.refreshExpiresIn = process.env.JWT_REFRESH_EXPIRE || '7d';
   }
 
@@ -54,7 +61,7 @@ class JwtService {
     }
   }
 
-  // Extract token from header
+  // Extract Bearer token from Authorization header
   extractToken(authHeader) {
     if (!authHeader) return null;
     const parts = authHeader.split(' ');
@@ -64,7 +71,7 @@ class JwtService {
     return null;
   }
 
-  // Decode token without verification
+  // Decode without verification — use only for non-sensitive inspection
   decodeToken(token) {
     try {
       return jwt.decode(token);

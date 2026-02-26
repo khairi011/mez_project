@@ -18,9 +18,21 @@ export default function Cart() {
     if (user) {
       fetchCart();
     } else {
+      // Load cart from localStorage if user is not logged in
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
+        setCart(JSON.parse(savedCart));
+      }
       setLoading(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    // Save cart to localStorage whenever it changes
+    if (cart) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+  }, [cart]);
 
   const fetchCart = async () => {
     try {

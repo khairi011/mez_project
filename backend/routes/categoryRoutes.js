@@ -8,6 +8,9 @@ const { validateIdParam } = require('../middleware/validationMiddleware');
 router.get('/', categoryController.getAllCategories);
 router.get('/:id', validateIdParam, categoryController.getCategoryById);
 
+// Route to get subcategories by category ID
+router.get('/:id/subcategories', validateIdParam, categoryController.getSubcategoriesByCategoryId);
+
 // ADMIN only
 router.post('/', authenticate, requireAdmin, categoryController.createCategory);
 router.put('/:id', authenticate, requireAdmin, validateIdParam, categoryController.updateCategory);

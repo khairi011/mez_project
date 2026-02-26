@@ -44,6 +44,12 @@ class Category {
     const [rows] = await pool.execute(query, [name]);
     return rows.length > 0;
   }
+
+  static async findSubcategoriesByCategoryId(categoryId) {
+    const query = 'SELECT id, name FROM subcategories WHERE category_id = ?';
+    const [rows] = await pool.execute(query, [categoryId]);
+    return rows;
+  }
 }
 
 module.exports = Category;

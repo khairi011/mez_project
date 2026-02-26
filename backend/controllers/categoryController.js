@@ -99,3 +99,22 @@ exports.deleteCategory = handleAsync(async (req, res) => {
     message: 'Category deleted',
   });
 });
+
+// Get subcategories by category ID
+exports.getSubcategoriesByCategoryId = handleAsync(async (req, res) => {
+  const { id } = req.params;
+  const subcategories = await Category.findSubcategoriesByCategoryId(id);
+
+  if (!subcategories || subcategories.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: 'No subcategories found for this category',
+    });
+  }
+
+  res.json({
+    success: true,
+    subcategories,
+    count: subcategories.length,
+  });
+});

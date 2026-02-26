@@ -1,16 +1,13 @@
-// backend/server.js
-
+// backend/server.jsconst express = require('express');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const pool = require('./config/database');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
-const { corsHeaders, authenticate, requireAdmin } = require('./middleware/authMiddleware');
+const { authenticate, requireAdmin } = require('./middleware/authMiddleware');
 
-// Initialize app
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -22,16 +19,14 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-app.use(corsHeaders);
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // ====== ROUTES ======
-// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'Server running ✅', timestamp: new Date() });
 });
-// TEST ROUTE - Check database connection
+
 app.get('/api/test', async (req, res) => {
   try {
     const connection = await pool.getConnection();
@@ -51,13 +46,14 @@ app.get('/api/test', async (req, res) => {
     });
   }
 });
-// API Routes
-app.use('/auth', require('./routes/authRoutes'));
-app.use('/products', require('./routes/productRoutes'));
-app.use('/categories', require('./routes/categoryRoutes'));
-app.use('/cart', authenticate, require('./routes/cartRoutes'));
-app.use('/orders', authenticate, require('./routes/orderRoutes'));
-app.use('/admin', authenticate, requireAdmin, require('./routes/adminRoutes'));
+
+// API Routes — all prefixed with /api
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/cart', authenticate, require('./routes/cartRoutes'));
+app.use('/api/orders', authenticate, require('./routes/orderRoutes'));
+app.use('/api/admin', authenticate, requireAdmin, require('./routes/adminRoutes'));
 
 // ====== ERROR HANDLING ======
 app.use(notFound);
@@ -77,8 +73,8 @@ app.listen(PORT, () => {
 });
 
 process.on('unhandledRejection', (err) => {
-  console.error('❌ Unhandled Error:', err);
-  process.exit(1);
+  console.error('❌ Unhandled Rejection:', err);
+  // Do NOT exit — log and keep the server alive
 });
 
 module.exports = app;

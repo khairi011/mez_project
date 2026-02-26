@@ -35,11 +35,17 @@ export default function Home() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      toast.error('Please enter a search query');
+      return;
+    }
 
     try {
       setLoading(true);
       const res = await productService.searchProducts(searchQuery);
+      if (res.data.products.length === 0) {
+        toast('No products found for your search', { icon: '🔍' });
+      }
       setProducts(res.data.products);
       setSelectedCategory(null);
     } catch (error) {
