@@ -1,6 +1,8 @@
 // backend/config/database.js
 
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const pool = mysql.createPool({
@@ -14,18 +16,52 @@ const pool = mysql.createPool({
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
+  multipleStatements: true,
 });
 
-// Test connection on startup — log only, don't kill the process
-pool.getConnection()
-  .then(conn => {
-    console.log('✅ Database connection successful');
-    conn.release();
-  })
-  .catch(err => {
-    console.error('❌ Database connection error:', err.message);
+// Auto-create tables from schema.sql on startup
+async function initDatabase() {
+  try {
+    // First ensure the database exists (connect without selecting a db)
+    const tempConn = await mysql.createConnection({
+      host: process.env.DB_HOST || 'localhost',
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD,
+      port: parseInt(process.env.DB_PORT) || 3306,
+      multipleStatements: true,
+    });
+    const dbName = process.env.DB_NAME || 'mezyena_db';
+    await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+    await tempConn.end();
+
+    // Now run schema.sql on the pool (which targets the db)
+    const schemaPath = path.join(__dirname, 'schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const schema = fs.readFileSync(schemaPath, 'utf8');
+      // Remove CREATE DATABASE / USE lines (pool already targets the db)
+      const filtered = schema
+        .split('\n')
+        .filter(line => {
+          const trimmed = line.trim().toUpperCase();
+          return !trimmed.startsWith('CREATE DATABASE') && !trimmed.startsWith('USE ');
+        })
+        .join('\n');
+
+      const conn = await pool.getConnection();
+      await conn.query(filtered);
+      conn.release();
+      console.log('✅ Database connection successful');
+      console.log('✅ Tables created / verified');
+    } else {
+      console.log('✅ Database connection successful');
+      console.log('⚠️  schema.sql not found — skipping table creation');
+    }
+  } catch (err) {
+    console.error('❌ Database initialization error:', err.message);
     console.error('⚠️  Check your .env DB credentials and that MySQL is running.');
-    // Do NOT exit — let individual requests handle DB errors
-  });
+  }
+}
+
+initDatabase();
 
 module.exports = pool;
