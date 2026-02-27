@@ -12,8 +12,9 @@ router.get('/stats', adminController.getDashboardStats);
 
 // Order management
 router.get('/orders', adminController.getAllOrders);
-router.patch('/orders/:id/status', validateIdParam, adminController.updateOrderStatus);
 router.get('/orders/status/:status', adminController.getOrdersByStatus);
+router.get('/orders/:id', validateIdParam, adminController.getOrderById);
+router.patch('/orders/:id/status', validateIdParam, adminController.updateOrderStatus);
 
 // User management
 router.get('/users', adminController.getAllUsers);

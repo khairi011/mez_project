@@ -82,6 +82,16 @@ exports.getDashboardStats = handleAsync(async (req, res) => {
   });
 });
 
+// Get single order with details (ADMIN)
+exports.getOrderById = handleAsync(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findByIdWithDetails(id);
+  if (!order) {
+    return res.status(404).json({ success: false, message: 'Order not found' });
+  }
+  res.json({ success: true, order });
+});
+
 // Get orders by status (ADMIN)
 exports.getOrdersByStatus = handleAsync(async (req, res) => {
   const { status } = req.params;

@@ -132,7 +132,7 @@ export default function MyOrders() {
                                 </p>
                               </div>
                               <p className="font-bold text-gray-800">
-                                ${(item.quantity * item.price).toFixed(2)}
+                                ${(item.quantity * parseFloat(item.price)).toFixed(2)}
                               </p>
                             </div>
                           ))}
@@ -168,11 +168,11 @@ export default function MyOrders() {
                         </div>
                         <div className="flex justify-between">
                           <span>Tax (10%)</span>
-                          <span>${(order.total_price * 0.1).toFixed(2)}</span>
+                          <span>${(parseFloat(order.total_price) * 0.1).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between border-t border-gray-300 pt-2 font-bold">
                           <span>Total</span>
-                          <span>${(order.total_price * 1.1).toFixed(2)}</span>
+                          <span>${(parseFloat(order.total_price) * 1.1).toFixed(2)}</span>
                         </div>
                       </div>
 

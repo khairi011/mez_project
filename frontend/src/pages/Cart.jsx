@@ -224,7 +224,7 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (10%)</span>
-                  <span>${(cart.total * 0.1).toFixed(2)}</span>
+                  <span>${(parseFloat(cart.total) * 0.1).toFixed(2)}</span>
                 </div>
               </div>
 
@@ -232,7 +232,7 @@ export default function Cart() {
               <div className="flex justify-between items-center">
                 <span className="text-lg font-bold text-gray-800">Total</span>
                 <span className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                  ${(cart.total * 1.1).toFixed(2)}
+                  ${(parseFloat(cart.total) * 1.1).toFixed(2)}
                 </span>
               </div>
 

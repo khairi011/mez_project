@@ -83,7 +83,7 @@ export default function Checkout() {
     );
   }
 
-  const subtotal = cart.total;
+  const subtotal = parseFloat(cart.total) || 0;
   const tax = subtotal * 0.1;
   const shipping = subtotal > 50 ? 0 : 5;
   const total = subtotal + tax + shipping;

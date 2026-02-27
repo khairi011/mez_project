@@ -85,7 +85,7 @@ export default function OrderConfirmation() {
                     </p>
                   </div>
                   <p className="font-bold text-lg text-gray-800">
-                    ${(item.quantity * item.price).toFixed(2)}
+                    ${(item.quantity * parseFloat(item.price)).toFixed(2)}
                   </p>
                 </div>
               ))}
@@ -119,7 +119,7 @@ export default function OrderConfirmation() {
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Tax (10%)</span>
-              <span>${(order.total_price * 0.1).toFixed(2)}</span>
+              <span>${(parseFloat(order.total_price) * 0.1).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Shipping</span>
@@ -128,7 +128,7 @@ export default function OrderConfirmation() {
             <div className="flex justify-between items-center border-t border-gray-300 pt-3">
               <span className="font-bold text-lg">Total Paid</span>
               <span className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                ${(order.total_price * 1.1).toFixed(2)}
+                ${(parseFloat(order.total_price) * 1.1).toFixed(2)}
               </span>
             </div>
           </div>
