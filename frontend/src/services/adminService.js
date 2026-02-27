@@ -19,9 +19,15 @@ export const adminService = {
   deleteUser: (userId) =>
     api.delete(`/admin/users/${userId}`),
 
-  // Products (admin CRUD)
-  createProduct: (data) => api.post('/products', data),
-  updateProduct: (id, data) => api.put(`/products/${id}`, data),
+  // Products (admin CRUD) — use FormData for file upload support
+  createProduct: (formData) =>
+    api.post('/products', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  updateProduct: (id, formData) =>
+    api.put(`/products/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   deleteProduct: (id) => api.delete(`/products/${id}`),
 
   // Categories (admin CRUD)

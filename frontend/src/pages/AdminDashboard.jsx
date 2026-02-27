@@ -46,6 +46,8 @@ export default function AdminDashboard() {
   const [productForm, setProductForm] = useState({
     name: '', description: '', price: '', stock: '', imageUrl: '', categoryId: '',
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Categories
   const [showCategoryForm, setShowCategoryForm] = useState(false);
@@ -175,6 +177,8 @@ export default function AdminDashboard() {
     setProductForm({ name: '', description: '', price: '', stock: '', imageUrl: '', categoryId: '' });
     setEditingProduct(null);
     setShowProductForm(false);
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const handleEditProduct = (product) => {
@@ -186,8 +190,23 @@ export default function AdminDashboard() {
       imageUrl: product.image_url || '',
       categoryId: String(product.category_id || ''),
     });
+    setImageFile(null);
+    setImagePreview(product.image_url || null);
     setEditingProduct(product);
     setShowProductForm(true);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image must be less than 5 MB');
+        return;
+      }
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      setProductForm({ ...productForm, imageUrl: '' }); // clear URL if file is chosen
+    }
   };
 
   const handleSaveProduct = async (e) => {
@@ -197,19 +216,24 @@ export default function AdminDashboard() {
       return;
     }
     try {
-      const data = {
-        name: productForm.name,
-        description: productForm.description,
-        price: parseFloat(productForm.price),
-        stock: parseInt(productForm.stock) || 0,
-        imageUrl: productForm.imageUrl,
-        categoryId: parseInt(productForm.categoryId),
-      };
+      const formData = new FormData();
+      formData.append('name', productForm.name);
+      formData.append('description', productForm.description);
+      formData.append('price', parseFloat(productForm.price));
+      formData.append('stock', parseInt(productForm.stock) || 0);
+      formData.append('categoryId', parseInt(productForm.categoryId));
+
+      if (imageFile) {
+        formData.append('image', imageFile);
+      } else if (productForm.imageUrl) {
+        formData.append('imageUrl', productForm.imageUrl);
+      }
+
       if (editingProduct) {
-        await adminService.updateProduct(editingProduct.id, data);
+        await adminService.updateProduct(editingProduct.id, formData);
         toast.success('Product updated');
       } else {
-        await adminService.createProduct(data);
+        await adminService.createProduct(formData);
         toast.success('Product created');
       }
       resetProductForm();
@@ -538,12 +562,55 @@ export default function AdminDashboard() {
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Image URL</label>
-              <input
-                type="text" value={productForm.imageUrl}
-                onChange={(e) => setProductForm({ ...productForm, imageUrl: e.target.value })}
-                className="input-base rounded-lg" placeholder="https://..."
-              />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Product Image</label>
+              <div className="flex items-start gap-4">
+                {/* Image preview */}
+                <div className="flex-shrink-0">
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img src={imagePreview} alt="Preview" className="w-24 h-24 rounded-lg object-cover border-2 border-pink-200" />
+                      <button
+                        type="button"
+                        onClick={() => { setImageFile(null); setImagePreview(null); setProductForm({ ...productForm, imageUrl: '' }); }}
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs font-bold hover:bg-red-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 rounded-lg bg-gray-100 flex items-center justify-center text-3xl text-gray-400 border-2 border-dashed border-gray-300">
+                      📷
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-2">
+                  {/* File upload */}
+                  <label className="flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-700 rounded-lg cursor-pointer hover:bg-pink-100 transition font-bold text-sm border border-pink-200 w-fit">
+                    📁 Upload Image
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                  <p className="text-xs text-gray-500">Max 5 MB — JPEG, PNG, GIF, WebP</p>
+                  {/* Or paste URL */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400">or paste URL:</span>
+                    <input
+                      type="text" value={productForm.imageUrl}
+                      onChange={(e) => {
+                        setProductForm({ ...productForm, imageUrl: e.target.value });
+                        setImageFile(null);
+                        setImagePreview(e.target.value || null);
+                      }}
+                      className="input-base rounded-lg text-sm flex-1" placeholder="https://..."
+                      disabled={!!imageFile}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>

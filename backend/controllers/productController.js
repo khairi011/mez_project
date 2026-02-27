@@ -1,6 +1,16 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const { handleAsync } = require('../middleware/errorHandler');
+const fs = require('fs');
+const path = require('path');
+
+// Build full image URL from uploaded file
+const getImageUrl = (req) => {
+  if (req.file) {
+    return `${req.protocol}://${req.get('host')}/uploads/products/${req.file.filename}`;
+  }
+  return req.body.imageUrl || null;
+};
 
 // Get all products
 exports.getAllProducts = handleAsync(async (req, res) => {
@@ -78,9 +88,10 @@ exports.getProductsByCategory = handleAsync(async (req, res) => {
   });
 });
 
-// Create product (ADMIN)
+// Create product (ADMIN) — supports file upload or imageUrl
 exports.createProduct = handleAsync(async (req, res) => {
-  const { name, description, price, stock, imageUrl, categoryId } = req.body;
+  const { name, description, price, stock, categoryId } = req.body;
+  const imageUrl = getImageUrl(req);
 
   // Verify category exists
   const category = await Category.findById(categoryId);
@@ -107,10 +118,10 @@ exports.createProduct = handleAsync(async (req, res) => {
   });
 });
 
-// Update product (ADMIN)
+// Update product (ADMIN) — supports file upload or imageUrl
 exports.updateProduct = handleAsync(async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, stock, imageUrl, categoryId } = req.body;
+  const { name, description, price, stock, categoryId } = req.body;
 
   const product = await Product.findById(id);
   if (!product) {
@@ -128,6 +139,14 @@ exports.updateProduct = handleAsync(async (req, res) => {
         message: 'Category not found',
       });
     }
+  }
+
+  // If a new file is uploaded, delete the old local image
+  const imageUrl = getImageUrl(req);
+  if (req.file && product.image_url && product.image_url.includes('/uploads/products/')) {
+    const oldFilename = product.image_url.split('/uploads/products/')[1];
+    const oldPath = path.join(__dirname, '..', 'uploads', 'products', oldFilename);
+    fs.unlink(oldPath, () => {}); // best effort delete
   }
 
   const updated = await Product.update(id, {

@@ -181,13 +181,6 @@ export default function Home() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-300 flex items-center justify-center">
-                    <div className="text-white opacity-0 group-hover:opacity-100 transition">
-                      <p className="text-lg font-bold">View Details</p>
-                    </div>
-                  </div>
                 </div>
               </Link>
             ))}
