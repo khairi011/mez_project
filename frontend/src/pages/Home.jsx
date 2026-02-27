@@ -27,6 +27,7 @@ export default function Home() {
       setProducts(productsRes.data.products);
       setCategories(categoriesRes.data.categories);
     } catch (error) {
+      console.error('🔴 [Home] fetchInitialData error:', error);
       toast.error('Failed to load products');
     } finally {
       setLoading(false);
@@ -49,6 +50,7 @@ export default function Home() {
       setProducts(res.data.products);
       setSelectedCategory(null);
     } catch (error) {
+      console.error('🔴 [Home] handleSearch error:', error);
       toast.error('Search failed');
     } finally {
       setLoading(false);
@@ -67,6 +69,7 @@ export default function Home() {
       setSelectedCategory(categoryId);
       setSearchQuery('');
     } catch (error) {
+      console.error('🔴 [Home] handleCategoryFilter error:', error);
       toast.error('Failed to filter products');
     } finally {
       setLoading(false);
@@ -171,7 +174,7 @@ export default function Home() {
                     </p>
                     <div className="flex justify-between items-center">
                       <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                        ${product.price.toFixed(2)}
+                        ${parseFloat(product.price).toFixed(2)}
                       </span>
                       <span className="text-xs font-semibold text-pink-600 bg-pink-100 px-3 py-1 rounded-full">
                         {product.category_name || 'Cosmetics'}
@@ -180,7 +183,7 @@ export default function Home() {
                   </div>
 
                   {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-300 flex items-center justify-center">
                     <div className="text-white opacity-0 group-hover:opacity-100 transition">
                       <p className="text-lg font-bold">View Details</p>
                     </div>

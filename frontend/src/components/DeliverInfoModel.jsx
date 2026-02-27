@@ -79,7 +79,7 @@ export default function DeliverInfoModel({ isOpen, onClose, onSubmit, loading })
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-pink-600 to-rose-600 text-white p-8 flex justify-between items-center sticky top-0">

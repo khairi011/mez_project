@@ -25,10 +25,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('🔴 [API Error]', error.config?.method?.toUpperCase(), error.config?.url, '→', error.response?.status, error.response?.data || error.message);
     if (error.response?.status === 401) {
+      const hadToken = !!localStorage.getItem('accessToken');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Only redirect to login if user was authenticated (avoid loop)
+      if (hadToken && window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

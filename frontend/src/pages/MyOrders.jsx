@@ -28,6 +28,7 @@ export default function MyOrders() {
       const res = await orderService.getMyOrders();
       setOrders(res.data.orders);
     } catch (error) {
+      console.error('🔴 [MyOrders] fetchOrders error:', error);
       toast.error('Failed to load orders');
     } finally {
       setLoading(false);
@@ -42,6 +43,7 @@ export default function MyOrders() {
       toast.success('Order cancelled successfully');
       fetchOrders();
     } catch (error) {
+      console.error('🔴 [MyOrders] cancelOrder error:', error);
       toast.error(error.response?.data?.message || 'Failed to cancel order');
     }
   };
@@ -101,7 +103,7 @@ export default function MyOrders() {
                     <div className="text-right">
                       <p className="text-sm text-gray-600 mb-1">Total</p>
                       <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                        ${order.total_price.toFixed(2)}
+                        ${parseFloat(order.total_price).toFixed(2)}
                       </p>
                     </div>
                     <span className="text-2xl ml-4">
@@ -126,7 +128,7 @@ export default function MyOrders() {
                                   {item.name}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                  Qty: {item.quantity} × ${item.price.toFixed(2)}
+                                  Qty: {item.quantity} × ${parseFloat(item.price).toFixed(2)}
                                 </p>
                               </div>
                               <p className="font-bold text-gray-800">
@@ -162,7 +164,7 @@ export default function MyOrders() {
                       <div className="bg-gray-50 rounded-xl p-4 space-y-2">
                         <div className="flex justify-between">
                           <span>Subtotal</span>
-                          <span>${order.total_price.toFixed(2)}</span>
+                          <span>${parseFloat(order.total_price).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Tax (10%)</span>

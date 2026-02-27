@@ -32,6 +32,7 @@ export default function Login() {
         navigate('/');
       }
     } catch (error) {
+      console.error('🔴 [Login] error:', error);
       const errorMsg = error.response?.data?.message || 'Login failed';
       toast.error(errorMsg);
     } finally {

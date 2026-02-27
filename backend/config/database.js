@@ -3,6 +3,7 @@
 const mysql = require('mysql2/promise');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const pool = mysql.createPool({
@@ -56,6 +57,9 @@ async function initDatabase() {
       console.log('✅ Database connection successful');
       console.log('⚠️  schema.sql not found — skipping table creation');
     }
+
+    // Seed default users if they don't exist
+    await seedDefaultUsers();
   } catch (err) {
     console.error('❌ Database initialization error:', err.message);
     console.error('⚠️  Check your .env DB credentials and that MySQL is running.');
@@ -63,5 +67,31 @@ async function initDatabase() {
 }
 
 initDatabase();
+
+// Seed default test users on startup
+async function seedDefaultUsers() {
+  const defaultUsers = [
+    { name: 'Admin Mezyena', email: 'admin@mezyena.com', password: 'Admin123!', role: 'ADMIN' },
+    { name: 'Client Test', email: 'client@test.com', password: 'Client123!', role: 'CLIENT' },
+    { name: 'Sara Dupont', email: 'sara@test.com', password: 'Sara1234!', role: 'CLIENT' },
+  ];
+
+  for (const u of defaultUsers) {
+    try {
+      const [existing] = await pool.execute('SELECT id FROM users WHERE email = ?', [u.email]);
+      if (existing.length === 0) {
+        const hash = await bcrypt.hash(u.password, 10);
+        const [result] = await pool.execute(
+          'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+          [u.name, u.email, hash, u.role]
+        );
+        await pool.execute('INSERT INTO carts (user_id) VALUES (?)', [result.insertId]);
+        console.log(`✅ User created: ${u.email} (${u.role})`);
+      }
+    } catch (e) {
+      // Silently skip duplicates
+    }
+  }
+}
 
 module.exports = pool;

@@ -57,6 +57,7 @@ export default function Register() {
         navigate('/');
       }
     } catch (error) {
+      console.error('🔴 [Register] error:', error);
       const errorMsg = error.response?.data?.message || 'Registration failed';
       toast.error(errorMsg);
     } finally {

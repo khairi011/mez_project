@@ -31,6 +31,7 @@ export default function Checkout() {
         navigate('/cart');
       }
     } catch (error) {
+      console.error('🔴 [Checkout] fetchCart error:', error);
       toast.error('Failed to load cart');
       navigate('/cart');
     } finally {
@@ -48,6 +49,7 @@ export default function Checkout() {
         navigate(`/order-confirmation/${res.data.order.id}`);
       }
     } catch (error) {
+      console.error('🔴 [Checkout] createOrder error:', error);
       const data = error.response?.data;
       if (data?.stockErrors && data.stockErrors.length > 0) {
         data.stockErrors.forEach((err) => {
@@ -135,7 +137,7 @@ export default function Checkout() {
                     Qty: <span className="font-bold">{item.quantity}</span>
                   </p>
                   <p className="text-gray-600">
-                    Unit Price: <span className="font-bold">${item.price.toFixed(2)}</span>
+                    Unit Price: <span className="font-bold">${parseFloat(item.price).toFixed(2)}</span>
                   </p>
                 </div>
 
@@ -143,7 +145,7 @@ export default function Checkout() {
                 <div className="text-right">
                   <p className="text-sm text-gray-600 mb-2">Subtotal</p>
                   <p className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(parseFloat(item.price) * item.quantity).toFixed(2)}
                   </p>
                   {item.stock !== undefined && item.quantity > item.stock && (
                     <p className="text-xs text-red-600 font-semibold mt-1">

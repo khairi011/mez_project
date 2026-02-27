@@ -27,6 +27,7 @@ export default function ProductDetail() {
       const res = await productService.getProductById(id);
       setProduct(res.data.product);
     } catch (error) {
+      console.error('🔴 [ProductDetail] fetchProduct error:', error);
       toast.error('Product not found');
       navigate('/');
     } finally {
@@ -52,6 +53,7 @@ export default function ProductDetail() {
       toast.success(`${product.name} added to cart! 🛒`);
       setQuantity(1);
     } catch (error) {
+      console.error('🔴 [ProductDetail] addToCart error:', error);
       const errorMsg = error.response?.data?.message || 'Failed to add to cart';
       toast.error(errorMsg);
     } finally {
@@ -123,10 +125,10 @@ export default function ProductDetail() {
               <p className="text-gray-600 text-sm mb-2">Price</p>
               <div className="flex items-baseline gap-2">
                 <span className="text-5xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                  ${product.price.toFixed(2)}
+                  ${parseFloat(product.price).toFixed(2)}
                 </span>
                 <span className="text-gray-500 line-through">
-                  ${(product.price * 1.2).toFixed(2)}
+                  ${(parseFloat(product.price) * 1.2).toFixed(2)}
                 </span>
               </div>
               <p className="text-sm text-green-600 mt-2">✓ Save 17%</p>

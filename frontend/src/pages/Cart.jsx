@@ -40,6 +40,7 @@ export default function Cart() {
       const res = await cartService.getCart();
       setCart(res.data.cart);
     } catch (error) {
+      console.error('🔴 [Cart] fetchCart error:', error);
       toast.error('Failed to load cart');
     } finally {
       setLoading(false);
@@ -55,6 +56,7 @@ export default function Cart() {
       await fetchCart();
       toast.success('Cart updated!');
     } catch (error) {
+      console.error('🔴 [Cart] updateQuantity error:', error);
       toast.error('Failed to update cart');
     } finally {
       setUpdating(null);
@@ -68,6 +70,7 @@ export default function Cart() {
       await fetchCart();
       toast.success('Item removed from cart');
     } catch (error) {
+      console.error('🔴 [Cart] removeItem error:', error);
       toast.error('Failed to remove item');
     } finally {
       setUpdating(null);
@@ -81,6 +84,7 @@ export default function Cart() {
         setCart({ items: [], total: 0, itemCount: 0 });
         toast.success('Cart cleared');
       } catch (error) {
+        console.error('🔴 [Cart] clearCart error:', error);
         toast.error('Failed to clear cart');
       }
     }
@@ -158,7 +162,7 @@ export default function Cart() {
                     {item.name}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3">
-                    ${item.price.toFixed(2)}
+                    ${parseFloat(item.price).toFixed(2)}
                   </p>
 
                   {/* Quantity Controls */}
@@ -188,7 +192,7 @@ export default function Cart() {
                   <div className="text-right">
                     <p className="text-sm text-gray-600">Subtotal</p>
                     <p className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${(parseFloat(item.price) * item.quantity).toFixed(2)}
                     </p>
                   </div>
                   <button
@@ -212,7 +216,7 @@ export default function Cart() {
               <div className="space-y-3 py-4 border-y border-gray-200">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>${cart.total.toFixed(2)}</span>
+                  <span>${parseFloat(cart.total).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>

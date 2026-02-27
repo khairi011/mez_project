@@ -21,6 +21,7 @@ export default function OrderConfirmation() {
       const res = await orderService.getOrderById(id);
       setOrder(res.data.order);
     } catch (error) {
+      console.error('🔴 [OrderConfirmation] fetchOrder error:', error);
       toast.error('Order not found');
     } finally {
       setLoading(false);
@@ -80,7 +81,7 @@ export default function OrderConfirmation() {
                   <div>
                     <p className="font-bold text-gray-800">{item.name}</p>
                     <p className="text-sm text-gray-600">
-                      {item.quantity} × ${item.price.toFixed(2)}
+                      {item.quantity} × ${parseFloat(item.price).toFixed(2)}
                     </p>
                   </div>
                   <p className="font-bold text-lg text-gray-800">
@@ -114,7 +115,7 @@ export default function OrderConfirmation() {
           <div className="bg-gray-50 rounded-xl p-6 space-y-3">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span>${order.total_price.toFixed(2)}</span>
+              <span>${parseFloat(order.total_price).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Tax (10%)</span>
