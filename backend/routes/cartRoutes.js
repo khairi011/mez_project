@@ -3,7 +3,7 @@ const router = express.Router();
 const cartController = require('../controllers/cartController');
 const { 
   validateAddToCart,
-  validateIdParam 
+  validateCartItemIdParam 
 } = require('../middleware/validationMiddleware');
 
 // All cart routes require authentication
@@ -16,10 +16,10 @@ router.get('/', cartController.getCart);
 router.post('/items', validateAddToCart, cartController.addToCart);
 
 // Update cart item
-router.patch('/items/:cartItemId', validateIdParam, cartController.updateCartItem);
+router.patch('/items/:cartItemId', validateCartItemIdParam, cartController.updateCartItem);
 
 // Remove from cart
-router.delete('/items/:cartItemId', validateIdParam, cartController.removeFromCart);
+router.delete('/items/:cartItemId', validateCartItemIdParam, cartController.removeFromCart);
 
 // Clear cart
 router.delete('/', cartController.clearCart);

@@ -204,15 +204,15 @@
 ### Corrigés ✅
 1. **URL API frontend** — `VITE_API_BASE_URL` manquait le suffixe `/api` → corrigé
 2. **Helmet Referrer Policy** — bloquait les requêtes cross-origin → configuré avec `strict-origin-when-cross-origin`
+3. **Emails envoyés au magasin** — Les emails de confirmation sont maintenant envoyés au client
+4. **Validation delivery info** — `validateDeliveryInfo` corrigé pour vérifier `body('deliveryInfo.firstName')` au lieu de `body('firstName')`
+5. **Validation cartItemId** — Nouveau validateur `validateCartItemIdParam` pour `param('cartItemId')` dans les routes panier
 
 ### À corriger ⚠️
-3. **Pas de refresh token** — Sur 401, le frontend redirige vers `/login` au lieu de tenter un refresh
-4. **Route admin non protégée par rôle** — `ProtectedRoute` ne vérifie pas le rôle ADMIN
-5. **Page Account est un stub** — Le backend a les endpoints profil mais le frontend ne les utilise pas
-6. **Page Wishlist est morte** — Aucun backend pour les favoris
-7. **Validation delivery info** — `validateDeliveryInfo` vérifie `body('firstName')` au lieu de `body('deliveryInfo.firstName')`
-8. **Validation cartItemId** — `validateIdParam` vérifie `param('id')` mais le param est nommé `:cartItemId`
-9. **Emails envoyés au magasin** — Les emails de confirmation sont envoyés à l'adresse du magasin, pas au client
+6. **Pas de refresh token** — Sur 401, le frontend redirige vers `/login` au lieu de tenter un refresh
+7. **Route admin non protégée par rôle** — `ProtectedRoute` ne vérifie pas le rôle ADMIN
+8. **Page Account est un stub** — Le backend a les endpoints profil mais le frontend ne les utilise pas
+9. **Page Wishlist est morte** — Aucun backend pour les favoris
 10. **Login filename casing** — `login.jsx` (minuscule) cassera sur Linux/macOS
 11. **Zustand installé mais jamais utilisé** — Dépendance morte dans le frontend
 12. **body-parser installé mais jamais utilisé** — Dépendance morte dans le backend

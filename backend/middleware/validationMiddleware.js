@@ -73,37 +73,37 @@ exports.validateProductCreate = [
 
 // Delivery info validation ⭐ IMPORTANT
 exports.validateDeliveryInfo = [
-  body('firstName')
+  body('deliveryInfo.firstName')
     .trim()
     .isLength({ min: 2, max: 50 })
     .withMessage('First name must be 2-50 characters')
     .matches(/^[a-zA-Zàâäéèêëïîôöùûüœæç\s'-]+$/)
     .withMessage('First name contains invalid characters'),
   
-  body('lastName')
+  body('deliveryInfo.lastName')
     .trim()
     .isLength({ min: 2, max: 50 })
     .withMessage('Last name must be 2-50 characters')
     .matches(/^[a-zA-Zàâäéèêëïîôöùûüœæç\s'-]+$/)
     .withMessage('Last name contains invalid characters'),
   
-  body('phoneNumber')
+  body('deliveryInfo.phoneNumber')
     .trim()
     .matches(/^(?:\+33|0)[1-9]\d{8}$/)
     .withMessage('Invalid phone number (ex: +33612345678)'),
   
-  body('fullAddress')
+  body('deliveryInfo.fullAddress')
     .trim()
     .isLength({ min: 10, max: 200 })
     .withMessage('Address must be 10-200 characters'),
   
-  body('city')
+  body('deliveryInfo.city')
     .optional({ checkFalsy: true })
     .trim()
     .isLength({ min: 2, max: 100 })
     .withMessage('City must be 2-100 characters'),
   
-  body('zipCode')
+  body('deliveryInfo.zipCode')
     .optional({ checkFalsy: true })
     .matches(/^\d{5}$|^$/)
     .withMessage('Zip code must be 5 digits'),
@@ -160,5 +160,13 @@ exports.validateIdParam = [
   param('id')
     .isInt()
     .withMessage('Invalid ID'),
+  validate,
+];
+
+// Cart item ID parameter validation
+exports.validateCartItemIdParam = [
+  param('cartItemId')
+    .isInt()
+    .withMessage('Invalid cart item ID'),
   validate,
 ];
