@@ -29,7 +29,7 @@ const sendEmail = async (to, subject, html) => {
 };
 
 // Send order confirmation email
-const sendOrderConfirmation = async (order, deliveryInfo) => {
+const sendOrderConfirmation = async (order, deliveryInfo, customerEmail) => {
   if (!deliveryInfo) return;
 
   const itemsHtml = order.items
@@ -50,15 +50,15 @@ const sendOrderConfirmation = async (order, deliveryInfo) => {
     <p>We will notify you when your order ships!</p>
   `;
 
-  // Use a fallback email if we can't determine the recipient
-  const recipientEmail = process.env.MAIL_FROM || process.env.MAIL_USER;
+  // Send to customer, fallback to store email
+  const recipientEmail = customerEmail || process.env.MAIL_FROM || process.env.MAIL_USER;
   if (recipientEmail) {
     await sendEmail(recipientEmail, `Order #${order.id} Confirmation`, html);
   }
 };
 
 // Send order status update email
-const sendOrderStatusUpdate = async (order, deliveryInfo) => {
+const sendOrderStatusUpdate = async (order, deliveryInfo, customerEmail) => {
   if (!deliveryInfo) return;
 
   const statusLabels = {
@@ -77,7 +77,8 @@ const sendOrderStatusUpdate = async (order, deliveryInfo) => {
     <p>${deliveryInfo.full_address}</p>
   `;
 
-  const recipientEmail = process.env.MAIL_FROM || process.env.MAIL_USER;
+  // Send to customer, fallback to store email
+  const recipientEmail = customerEmail || process.env.MAIL_FROM || process.env.MAIL_USER;
   if (recipientEmail) {
     await sendEmail(recipientEmail, `Order #${order.id} Status Update`, html);
   }

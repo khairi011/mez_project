@@ -98,9 +98,10 @@ exports.createOrder = handleAsync(async (req, res) => {
     // Get created order with details
     const order = await Order.findByIdWithDetails(orderId);
 
-    // Send confirmation email
+    // Send confirmation email to the customer
     if (order.deliveryInfo) {
-      await emailService.sendOrderConfirmation(order, order.deliveryInfo);
+      const userEmail = req.user?.email;
+      await emailService.sendOrderConfirmation(order, order.deliveryInfo, userEmail);
     }
 
     res.status(201).json({

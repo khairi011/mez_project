@@ -50,9 +50,11 @@ exports.updateOrderStatus = handleAsync(async (req, res) => {
   await Order.updateStatus(id, status);
   const updated = await Order.findByIdWithDetails(id);
 
-  // Send email notification
-  if (updated.deliveryInfo) {
-    await emailService.sendOrderStatusUpdate(updated, updated.deliveryInfo);
+  // Send email notification to the customer
+  if (updated.deliveryInfo && updated.user_id) {
+    const customer = await User.findById(updated.user_id);
+    const customerEmail = customer?.email;
+    await emailService.sendOrderStatusUpdate(updated, updated.deliveryInfo, customerEmail);
   }
 
   res.json({
