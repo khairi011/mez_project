@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/categoryController');
-const { authenticate, requireAdmin } = require('../middleware/authMiddleware');
+const { authenticate, requireAdmin } = require('../middleware/Authmiddleware');
 const { validateIdParam } = require('../middleware/validationMiddleware');
 
 // Public routes

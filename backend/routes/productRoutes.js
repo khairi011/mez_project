@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
-const { authenticate, requireAdmin } = require('../middleware/authMiddleware');
+const { authenticate, requireAdmin } = require('../middleware/Authmiddleware');
 const {
   validateProductCreate,
   validateProductUpdate,
@@ -21,5 +21,4 @@ router.post('/', authenticate, requireAdmin, validateProductCreate, productContr
 router.put('/:id', authenticate, requireAdmin, validateIdParam, validateProductUpdate, productController.updateProduct);
 router.delete('/:id', authenticate, requireAdmin, validateIdParam, productController.deleteProduct);
 
-module.exports = router;
 module.exports = router;

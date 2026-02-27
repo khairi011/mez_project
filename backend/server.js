@@ -1,4 +1,3 @@
-// backend/server.jsconst express = require('express');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,7 +5,7 @@ require('dotenv').config();
 
 const pool = require('./config/database');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
-const { authenticate, requireAdmin } = require('./middleware/authMiddleware');
+const { authenticate, requireAdmin } = require('./middleware/Authmiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 5000;

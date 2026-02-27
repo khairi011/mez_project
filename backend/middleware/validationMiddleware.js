@@ -133,6 +133,28 @@ exports.validateAddToCart = [
   validate,
 ];
 
+// Product update validation
+exports.validateProductUpdate = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 3, max: 255 })
+    .withMessage('Name must be 3-255 characters'),
+  body('price')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Price must be > 0'),
+  body('stock')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Stock must be >= 0'),
+  body('categoryId')
+    .optional()
+    .isInt()
+    .withMessage('Invalid category ID'),
+  validate,
+];
+
 // ID parameter validation
 exports.validateIdParam = [
   param('id')

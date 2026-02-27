@@ -84,7 +84,7 @@ exports.getDashboardStats = handleAsync(async (req, res) => {
 exports.getOrdersByStatus = handleAsync(async (req, res) => {
   const { status } = req.params;
 
-  const validStatuses = ['EN_ATTENTE', 'CONFIRMEE', 'EXPEDIEE', 'LIVREE', 'ANNULEA'];
+  const validStatuses = ['EN_ATTENTE', 'CONFIRMEE', 'EXPEDIEE', 'LIVREE', 'ANNULEE'];
 
   if (!validStatuses.includes(status)) {
     return res.status(400).json({

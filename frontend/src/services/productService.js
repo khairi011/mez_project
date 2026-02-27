@@ -14,5 +14,5 @@ export const productService = {
     api.get(`/products/category/${categoryId}?page=${page}`),
 
   getAllCategories: () =>
-    api.get('/categories/list'),
+    api.get('/categories'),
 };

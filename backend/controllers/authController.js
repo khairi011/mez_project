@@ -114,3 +114,77 @@ exports.logout = (req, res) => {
     message: 'Logout successful',
   });
 };
+
+// Refresh token
+exports.refreshToken = handleAsync(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(400).json({
+      success: false,
+      message: 'Refresh token required',
+    });
+  }
+
+  try {
+    const decoded = jwtService.verifyRefreshToken(refreshToken);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const tokens = jwtService.generateTokens(user.id, user.email, user.role);
+
+    res.json({
+      success: true,
+      message: 'Token refreshed',
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid refresh token',
+    });
+  }
+});
+
+// Update user profile
+exports.updateProfile = handleAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { name, email } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
+
+  // Check if email is taken by another user
+  if (email && email !== user.email) {
+    const existingUser = await User.findByEmail(email);
+    if (existingUser && existingUser.id !== userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email already in use',
+      });
+    }
+  }
+
+  const updatedUser = await User.update(userId, {
+    name: name || user.name,
+    email: email || user.email,
+  });
+
+  res.json({
+    success: true,
+    message: 'Profile updated',
+    user: updatedUser,
+  });
+});

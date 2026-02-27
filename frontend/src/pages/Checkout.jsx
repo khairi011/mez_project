@@ -138,7 +138,7 @@ export default function Checkout() {
                 Click the button below to enter your delivery address
               </p>
               <button
-                onClick={() => setShowDeliverInfoModel(true)}
+                onClick={() => setShowDeliveryModal(true)}
                 className="bg-gradient-to-r from-pink-600 to-rose-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transition"
               >
                 📝 Enter Delivery Address
@@ -179,7 +179,7 @@ export default function Checkout() {
 
               {/* Place Order Button */}
               <button
-                onClick={() => setShowDeliverInfoModel(true)}
+                onClick={() => setShowDeliveryModal(true)}
                 disabled={creating}
                 className="w-full bg-gradient-to-r from-pink-600 via-purple-600 to-rose-600 text-white font-bold py-4 rounded-2xl hover:shadow-lg transition disabled:opacity-50"
               >
@@ -214,8 +214,8 @@ export default function Checkout() {
 
       {/* Delivery Info Modal */}
       <DeliverInfoModel
-        isOpen={showDeliverinfoModel}
-        onClose={() => setShowDeliverinfoModel(false)}
+        isOpen={showDeliveryModal}
+        onClose={() => setShowDeliveryModal(false)}
         onSubmit={handleCreateOrder}
         loading={creating}
       />
