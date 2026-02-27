@@ -48,8 +48,18 @@ export default function Checkout() {
         navigate(`/order-confirmation/${res.data.order.id}`);
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Failed to create order';
-      toast.error(errorMsg);
+      const data = error.response?.data;
+      if (data?.stockErrors && data.stockErrors.length > 0) {
+        data.stockErrors.forEach((err) => {
+          toast.error(
+            `${err.productName}: only ${err.available} left in stock (you requested ${err.requested})`,
+            { duration: 6000 }
+          );
+        });
+      } else {
+        const errorMsg = data?.message || 'Failed to create order';
+        toast.error(errorMsg);
+      }
     } finally {
       setCreating(false);
       setShowDeliveryModal(false);
@@ -75,6 +85,9 @@ export default function Checkout() {
   const tax = subtotal * 0.1;
   const shipping = subtotal > 50 ? 0 : 5;
   const total = subtotal + tax + shipping;
+  const hasStockIssue = cart.items.some(
+    (item) => item.stock !== undefined && item.quantity > item.stock
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 py-8">
@@ -91,8 +104,15 @@ export default function Checkout() {
             {cart.items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl shadow-lg p-6 flex gap-6"
+                className="bg-white rounded-2xl shadow-lg p-6 flex gap-6 relative"
               >
+                {/* Stock warning */}
+                {item.stock !== undefined && item.quantity > item.stock && (
+                  <div className="absolute top-2 right-2 bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full">
+                    ⚠️ Only {item.stock} in stock
+                  </div>
+                )}
+
                 {/* Product Image */}
                 <div className="w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
                   {item.image_url ? (
@@ -125,6 +145,11 @@ export default function Checkout() {
                   <p className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
                     ${(item.price * item.quantity).toFixed(2)}
                   </p>
+                  {item.stock !== undefined && item.quantity > item.stock && (
+                    <p className="text-xs text-red-600 font-semibold mt-1">
+                      Stock insuffisant
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
@@ -180,10 +205,10 @@ export default function Checkout() {
               {/* Place Order Button */}
               <button
                 onClick={() => setShowDeliveryModal(true)}
-                disabled={creating}
+                disabled={creating || hasStockIssue}
                 className="w-full bg-gradient-to-r from-pink-600 via-purple-600 to-rose-600 text-white font-bold py-4 rounded-2xl hover:shadow-lg transition disabled:opacity-50"
               >
-                {creating ? '🔄 Processing...' : '🎉 Place Order'}
+                {creating ? '🔄 Processing...' : hasStockIssue ? '⚠️ Stock insuffisant' : '🎉 Place Order'}
               </button>
 
               {/* Info */}

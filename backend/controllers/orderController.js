@@ -50,6 +50,7 @@ exports.createOrder = handleAsync(async (req, res) => {
 
   // Calculate total and verify stock
   let totalPrice = 0;
+  const stockErrors = [];
   for (const item of cartItems) {
     const product = await Product.findById(item.product_id);
     if (!product) {
@@ -59,12 +60,22 @@ exports.createOrder = handleAsync(async (req, res) => {
       });
     }
     if (product.stock < item.quantity) {
-      return res.status(400).json({
-        success: false,
-        message: `Insufficient stock for ${product.name}`,
+      stockErrors.push({
+        productId: item.product_id,
+        productName: product.name,
+        requested: item.quantity,
+        available: product.stock,
       });
     }
     totalPrice += product.price * item.quantity;
+  }
+
+  if (stockErrors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Insufficient stock for some products',
+      stockErrors,
+    });
   }
 
   try {
